@@ -34,8 +34,30 @@ export type Database = {
   };
   public: {
     Tables: {
+      categories: {
+        Row: {
+          created_at: string;
+          id: string;
+          name: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          name: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          name?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       transactions: {
         Row: {
+          category_id: string | null;
           conversion_rate: number | null;
           country: string | null;
           created_at: string;
@@ -54,6 +76,7 @@ export type Database = {
           withdrawal_amount: number | null;
         };
         Insert: {
+          category_id?: string | null;
           conversion_rate?: number | null;
           country?: string | null;
           created_at?: string;
@@ -72,6 +95,7 @@ export type Database = {
           withdrawal_amount?: number | null;
         };
         Update: {
+          category_id?: string | null;
           conversion_rate?: number | null;
           country?: string | null;
           created_at?: string;
@@ -89,7 +113,15 @@ export type Database = {
           user_name?: string | null;
           withdrawal_amount?: number | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "transactions_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: {

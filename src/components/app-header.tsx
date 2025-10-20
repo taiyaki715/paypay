@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, List } from "lucide-react";
+import { Download, FolderKanban, List } from "lucide-react";
 import Link from "next/link";
 import { CsvUpload } from "@/components/csv-upload";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,12 @@ export function AppHeader() {
             <Button variant="ghost" size="sm">
               <List className="h-4 w-4" />
               取引一覧
+            </Button>
+          </Link>
+          <Link href="/categories">
+            <Button variant="ghost" size="sm">
+              <FolderKanban className="h-4 w-4" />
+              カテゴリ管理
             </Button>
           </Link>
           <Dialog>

@@ -119,3 +119,42 @@ export async function getTransactions(): Promise<{
     };
   }
 }
+
+export async function assignCategoryToTransaction(
+  transactionId: string,
+  categoryId: string | null,
+): Promise<{
+  success: boolean;
+  data?: Tables<"transactions">;
+  error?: string;
+}> {
+  try {
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("transactions")
+      .update({ category_id: categoryId })
+      .eq("id", transactionId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Database update error:", error);
+      return {
+        success: false,
+        error: `カテゴリの割り当てに失敗しました: ${error.message}`,
+      };
+    }
+
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    console.error("Assign category error:", error);
+    return {
+      success: false,
+      error: `カテゴリの割り当てに失敗しました: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+}
