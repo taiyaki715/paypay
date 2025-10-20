@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { parsePayPayCSVFromText } from "@/lib/utils/csvParser";
-import type { TablesInsert } from "@/types/database.types";
+import type { Tables, TablesInsert } from "@/types/database.types";
 
 export async function importTransactions(
   transactions: TablesInsert<"transactions">[],
@@ -82,6 +82,40 @@ export async function importTransactionsFromFile(formData: FormData): Promise<{
     return {
       success: false,
       error: `インポートに失敗しました: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+}
+
+export async function getTransactions(): Promise<{
+  success: boolean;
+  data?: Tables<"transactions">[];
+  error?: string;
+}> {
+  try {
+    const supabase = await createClient();
+
+    const { data, error } = await supabase
+      .from("transactions")
+      .select("*")
+      .order("transaction_date", { ascending: false });
+
+    if (error) {
+      console.error("Database query error:", error);
+      return {
+        success: false,
+        error: `Failed to fetch transactions: ${error.message}`,
+      };
+    }
+
+    return {
+      success: true,
+      data: data || [],
+    };
+  } catch (error) {
+    console.error("Get transactions error:", error);
+    return {
+      success: false,
+      error: `Failed to get transactions: ${error instanceof Error ? error.message : String(error)}`,
     };
   }
 }
