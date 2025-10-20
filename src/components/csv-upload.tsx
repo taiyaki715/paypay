@@ -4,13 +4,6 @@ import { useState } from "react";
 import { importTransactionsFromFile } from "@/app/actions/transactions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
 export function CsvUpload() {
@@ -86,60 +79,46 @@ export function CsvUpload() {
   };
 
   return (
-    <Card className="w-full max-w-2xl">
-      <CardHeader>
-        <CardTitle>CSV取引データインポート</CardTitle>
-        <CardDescription>
-          PayPayのCSVファイルをアップロードして、取引データをインポートします
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <label
-            htmlFor="csv-file"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            CSVファイルを選択
-          </label>
-          <input
-            id="csv-file"
-            type="file"
-            accept=".csv"
-            onChange={handleFileChange}
-            disabled={uploading}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          />
-        </div>
-
-        {file && (
-          <div className="text-sm text-muted-foreground">
-            選択されたファイル: {file.name}
-          </div>
-        )}
-
-        {uploading && (
-          <div className="space-y-2">
-            <Progress value={progress} className="w-full" />
-            <p className="text-sm text-muted-foreground text-center">
-              処理中... {progress}%
-            </p>
-          </div>
-        )}
-
-        {result && (
-          <Alert variant={result.type === "error" ? "destructive" : "default"}>
-            <AlertDescription>{result.message}</AlertDescription>
-          </Alert>
-        )}
-
-        <Button
-          onClick={handleUpload}
-          disabled={!file || uploading}
-          className="w-full"
+    <div className="grid gap-4">
+      <div className="grid gap-3">
+        <label
+          htmlFor="csv-file"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          {uploading ? "アップロード中..." : "アップロード"}
-        </Button>
-      </CardContent>
-    </Card>
+          CSVファイルを選択
+        </label>
+        <input
+          id="csv-file"
+          type="file"
+          accept=".csv"
+          onChange={handleFileChange}
+          disabled={uploading}
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        />
+      </div>
+
+      {uploading && (
+        <div className="space-y-2">
+          <Progress value={progress} className="w-full" />
+          <p className="text-sm text-muted-foreground text-center">
+            処理中... {progress}%
+          </p>
+        </div>
+      )}
+
+      {result && (
+        <Alert variant={result.type === "error" ? "destructive" : "default"}>
+          <AlertDescription>{result.message}</AlertDescription>
+        </Alert>
+      )}
+
+      <Button
+        onClick={handleUpload}
+        disabled={!file || uploading}
+        className="w-full"
+      >
+        {uploading ? "アップロード中..." : "アップロード"}
+      </Button>
+    </div>
   );
 }

@@ -53,9 +53,7 @@ export async function importTransactions(
   }
 }
 
-export async function importTransactionsFromFile(
-  formData: FormData,
-): Promise<{
+export async function importTransactionsFromFile(formData: FormData): Promise<{
   success: boolean;
   count?: number;
   error?: string;
