@@ -22,16 +22,20 @@ export function getColumns(categories: Category[]): ColumnDef<Transaction>[] {
       },
     },
     {
-      accessorKey: "transaction_number",
-      header: "取引番号",
-    },
-    {
-      accessorKey: "transaction_type",
-      header: "取引種別",
-    },
-    {
       accessorKey: "merchant",
-      header: ({ column }) => <SortableHeader column={column} label="取引先" />,
+      header: ({ column }) => (
+        <div className="w-[200px]">
+          <SortableHeader column={column} label="取引先" />
+        </div>
+      ),
+      cell: ({ row }) => {
+        const merchant = row.getValue("merchant") as string;
+        return (
+          <div className="w-[200px] overflow-hidden text-ellipsis whitespace-nowrap">
+            {merchant}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "deposit_amount",
