@@ -41,7 +41,7 @@ export function DataTable<TData, TValue>({
   // TanStack Tableは0-indexedなので変換
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: Math.max(0, pageFromUrl - 1),
-    pageSize: 10,
+    pageSize: 30,
   });
 
   // URLパラメータが変更されたときにページネーション状態を同期
