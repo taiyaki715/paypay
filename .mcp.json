@@ -1,29 +1,26 @@
 {
-    "mcpServers": {
-      "context7": {
-        "type": "http",
-        "url": "https://mcp.context7.com/mcp"
-      },
-      "serena": {
-        "type": "stdio",
-        "command": "uvx",
-        "args": [
-          "--from",
-          "git+https://github.com/oraios/serena",
-          "serena-mcp-server",
-          "--context",
-          "ide-assistant",
-          "--enable-web-dashboard",
-          "false"
-        ],
-        "env": {}
-      },
-      "playwright": {
-        "command": "npx",
-        "args": [
-          "@playwright/mcp@latest",
-          "--headless"
-        ]
-      }
+  "mcpServers": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "serena": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena-mcp-server",
+        "--context",
+        "ide-assistant",
+        "--enable-web-dashboard",
+        "false"
+      ],
+      "env": {}
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest", "--headless"]
     }
   }
+}
