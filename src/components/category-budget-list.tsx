@@ -1,6 +1,5 @@
 import { getCategories, getCategorySpending } from "@/app/actions/categories";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { CategoryBudgetChart } from "@/components/category-budget-chart";
 
 export async function CategoryBudgetList() {
   const now = new Date();
@@ -32,7 +31,7 @@ export async function CategoryBudgetList() {
       return {
         id: category.id,
         name: category.name,
-        budget: category.monthly_budget,
+        budget: category.monthly_budget ?? 0,
         spending,
         percentage:
           category.monthly_budget && category.monthly_budget > 0
@@ -47,58 +46,21 @@ export async function CategoryBudgetList() {
     (cat) => cat.budget || cat.spending > 0,
   );
 
+  // Sort by budget amount (descending)
+  const sortedCategories = visibleCategories.sort((a, b) => b.budget - a.budget);
+
+  // Format data for chart
+  const chartData = sortedCategories.map((category) => ({
+    category: category.name,
+    budget: category.budget,
+    spending: category.spending,
+  }));
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>カテゴリ別予算</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {visibleCategories.length === 0 ? (
-          <div className="text-muted-foreground text-sm">
-            予算が設定されているカテゴリがありません
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {visibleCategories.map((category) => (
-              <div
-                key={category.id}
-                className="flex items-center gap-3 text-sm"
-              >
-                <span className="font-medium min-w-[6rem] shrink-0">
-                  {category.name}
-                </span>
-                {category.budget ? (
-                  <>
-                    <Progress
-                      value={Math.min(category.percentage, 100)}
-                      indicatorClassName="bg-chart-2"
-                      className="flex-1"
-                    />
-                    <span className="text-muted-foreground shrink-0">
-                      ¥{category.spending.toLocaleString()} / ¥
-                      {category.budget.toLocaleString()}
-                    </span>
-                    <span
-                      className={
-                        category.percentage > 100
-                          ? "text-red-500 font-medium min-w-[3rem] text-right shrink-0"
-                          : "text-muted-foreground min-w-[3rem] text-right shrink-0"
-                      }
-                    >
-                      {category.percentage}%
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-muted-foreground">
-                    ¥{category.spending.toLocaleString()}
-                    <span className="text-xs ml-1">(予算未設定)</span>
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+    <CategoryBudgetChart
+      chartData={chartData}
+      year={currentYear}
+      month={currentMonth}
+    />
   );
 }
