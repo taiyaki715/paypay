@@ -68,6 +68,7 @@ export type Database = {
           deposit_amount: number | null;
           foreign_withdrawal_amount: number | null;
           id: string;
+          is_excluded: boolean;
           merchant: string;
           payment_method: string | null;
           payment_plan: string | null;
@@ -87,6 +88,7 @@ export type Database = {
           deposit_amount?: number | null;
           foreign_withdrawal_amount?: number | null;
           id?: string;
+          is_excluded?: boolean;
           merchant: string;
           payment_method?: string | null;
           payment_plan?: string | null;
@@ -106,6 +108,7 @@ export type Database = {
           deposit_amount?: number | null;
           foreign_withdrawal_amount?: number | null;
           id?: string;
+          is_excluded?: boolean;
           merchant?: string;
           payment_method?: string | null;
           payment_plan?: string | null;

@@ -1,10 +1,13 @@
 "use client";
 
 import type { Column } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { assignCategoryToTransaction } from "@/app/actions/transactions";
+import {
+  assignCategoryToTransaction,
+  toggleExcludeTransaction,
+} from "@/app/actions/transactions";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -13,6 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { Tables } from "@/types/database.types";
 
 type Transaction = Tables<"transactions">;
@@ -70,6 +79,54 @@ export function CategorySelect({
         ))}
       </SelectContent>
     </Select>
+  );
+}
+
+export function ExcludeButton({ transaction }: { transaction: Transaction }) {
+  const router = useRouter();
+  const [isExcluded, setIsExcluded] = useState(transaction.is_excluded);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    setIsExcluded(transaction.is_excluded);
+  }, [transaction.is_excluded]);
+
+  const handleToggle = async () => {
+    setIsUpdating(true);
+
+    const result = await toggleExcludeTransaction(transaction.id);
+
+    if (result.success && result.data) {
+      setIsExcluded(result.data.is_excluded);
+      router.refresh();
+    }
+
+    setIsUpdating(false);
+  };
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleToggle}
+            disabled={isUpdating}
+            className="h-8 w-8"
+          >
+            {isExcluded ? (
+              <Eye className="h-4 w-4" />
+            ) : (
+              <EyeOff className="h-4 w-4" />
+            )}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{isExcluded ? "除外を解除" : "除外する"}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 

@@ -1,7 +1,11 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { CategorySelect, SortableHeader } from "@/components/table-cells";
+import {
+  CategorySelect,
+  ExcludeButton,
+  SortableHeader,
+} from "@/components/table-cells";
 import type { Tables } from "@/types/database.types";
 
 export type Transaction = Tables<"transactions">;
@@ -70,6 +74,13 @@ export function getColumns(categories: Category[]): ColumnDef<Transaction>[] {
         return (
           <CategorySelect transaction={row.original} categories={categories} />
         );
+      },
+    },
+    {
+      id: "exclude",
+      header: "",
+      cell: ({ row }) => {
+        return <ExcludeButton transaction={row.original} />;
       },
     },
   ];

@@ -158,3 +158,55 @@ export async function assignCategoryToTransaction(
     };
   }
 }
+
+export async function toggleExcludeTransaction(transactionId: string): Promise<{
+  success: boolean;
+  data?: Tables<"transactions">;
+  error?: string;
+}> {
+  try {
+    const supabase = await createClient();
+
+    // Get current is_excluded value
+    const { data: currentData, error: fetchError } = await supabase
+      .from("transactions")
+      .select("is_excluded")
+      .eq("id", transactionId)
+      .single();
+
+    if (fetchError) {
+      console.error("Database fetch error:", fetchError);
+      return {
+        success: false,
+        error: `取引の取得に失敗しました: ${fetchError.message}`,
+      };
+    }
+
+    // Toggle is_excluded value
+    const { data, error } = await supabase
+      .from("transactions")
+      .update({ is_excluded: !currentData.is_excluded })
+      .eq("id", transactionId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Database update error:", error);
+      return {
+        success: false,
+        error: `除外状態の変更に失敗しました: ${error.message}`,
+      };
+    }
+
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    console.error("Toggle exclude error:", error);
+    return {
+      success: false,
+      error: `除外状態の変更に失敗しました: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+}
