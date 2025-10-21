@@ -166,6 +166,7 @@ export async function getCategorySpending(
       .from("transactions")
       .select("withdrawal_amount")
       .eq("category_id", categoryId)
+      .eq("is_excluded", false)
       .gte("transaction_date", startDate)
       .lte("transaction_date", endDate);
 
@@ -191,6 +192,79 @@ export async function getCategorySpending(
     return {
       success: false,
       error: `支出の取得に失敗しました: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+}
+
+export async function getMonthlyBudgetSummary(
+  year: number,
+  month: number,
+): Promise<{
+  success: boolean;
+  data?: {
+    totalBudget: number;
+    totalSpending: number;
+    progressPercentage: number;
+    remainingBudget: number;
+  };
+  error?: string;
+}> {
+  try {
+    // Get all categories
+    const categoriesResult = await getCategories();
+    if (!categoriesResult.success || !categoriesResult.data) {
+      return {
+        success: false,
+        error: categoriesResult.error || "カテゴリの取得に失敗しました",
+      };
+    }
+
+    // Filter categories with budget set
+    const categoriesWithBudget = categoriesResult.data.filter(
+      (category) =>
+        category.monthly_budget !== null && category.monthly_budget > 0,
+    );
+
+    // Calculate total budget
+    const totalBudget = categoriesWithBudget.reduce(
+      (sum, category) => sum + (category.monthly_budget || 0),
+      0,
+    );
+
+    // Calculate total spending for all categories with budget
+    let totalSpending = 0;
+    for (const category of categoriesWithBudget) {
+      const spendingResult = await getCategorySpending(
+        category.id,
+        year,
+        month,
+      );
+      if (spendingResult.success && spendingResult.data !== undefined) {
+        totalSpending += spendingResult.data;
+      }
+    }
+
+    // Calculate progress percentage
+    const progressPercentage =
+      totalBudget > 0 ? (totalSpending / totalBudget) * 100 : 0;
+
+    // Calculate remaining budget
+    const remainingBudget = totalBudget - totalSpending;
+
+    return {
+      success: true,
+      data: {
+        totalBudget,
+        totalSpending,
+        progressPercentage,
+        remainingBudget,
+      },
+    };
+  } catch (error) {
+    console.error("Get monthly budget summary error:", error);
+    return {
+      success: false,
+      error: `月間予算サマリーの取得に失敗しました: ${error instanceof Error ? error.message : String(error)}`,
     };
   }
 }

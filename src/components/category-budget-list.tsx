@@ -1,11 +1,5 @@
 import { getCategories, getCategorySpending } from "@/app/actions/categories";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
 export async function CategoryBudgetList() {
@@ -66,7 +60,10 @@ export async function CategoryBudgetList() {
         ) : (
           <div className="space-y-2">
             {visibleCategories.map((category) => (
-              <div key={category.id} className="flex items-center gap-3 text-sm">
+              <div
+                key={category.id}
+                className="flex items-center gap-3 text-sm"
+              >
                 <span className="font-medium min-w-[6rem] shrink-0">
                   {category.name}
                 </span>
