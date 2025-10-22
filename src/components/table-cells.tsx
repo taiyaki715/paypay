@@ -22,6 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 import type { Tables } from "@/types/database.types";
 
 type Transaction = Tables<"transactions">;
@@ -67,7 +68,14 @@ export function CategorySelect({
       onValueChange={handleValueChange}
       disabled={isUpdating}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger
+        className={cn(
+          "w-[180px]",
+          !transaction.category_id &&
+            !transaction.is_excluded &&
+            "border-destructive",
+        )}
+      >
         <SelectValue placeholder="未分類" />
       </SelectTrigger>
       <SelectContent>
