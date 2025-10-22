@@ -33,14 +33,33 @@ export async function updateSession(request: NextRequest) {
   });
 
   // セッション更新（重要：認証状態を保持）
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  // 認証が必要なページへの保護（オプション）
-  // if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
-  //   const url = request.nextUrl.clone()
-  //   url.pathname = '/login'
-  //   return NextResponse.redirect(url)
-  // }
+  // 認証不要なパスを定義
+  const publicPaths = ["/login", "/signup"];
+  const authPaths = ["/auth"];
+  const isPublicPath = publicPaths.some((path) =>
+    request.nextUrl.pathname.startsWith(path),
+  );
+  const isAuthPath = authPaths.some((path) =>
+    request.nextUrl.pathname.startsWith(path),
+  );
+
+  // 未認証ユーザーの保護
+  if (!user && !isPublicPath && !isAuthPath) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // 認証済みユーザーがログイン/サインアップページにアクセスした場合
+  if (user && isPublicPath) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
 
   return supabaseResponse;
 }

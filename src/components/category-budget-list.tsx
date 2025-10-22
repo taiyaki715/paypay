@@ -47,7 +47,9 @@ export async function CategoryBudgetList() {
   );
 
   // Sort by budget amount (descending)
-  const sortedCategories = visibleCategories.sort((a, b) => b.budget - a.budget);
+  const sortedCategories = visibleCategories.sort(
+    (a, b) => b.budget - a.budget,
+  );
 
   // Format data for chart
   const chartData = sortedCategories.map((category) => ({

@@ -82,7 +82,8 @@ export function CategoryBudgetChart({
                       <div className="flex flex-1 justify-between items-center leading-none">
                         <div className="grid gap-1.5">
                           <span className="text-muted-foreground">
-                            {chartConfig[name as keyof typeof chartConfig]?.label || name}
+                            {chartConfig[name as keyof typeof chartConfig]
+                              ?.label || name}
                           </span>
                         </div>
                         <span className="font-mono font-medium tabular-nums text-foreground">
@@ -93,7 +94,12 @@ export function CategoryBudgetChart({
                   />
                 }
               />
-              <Bar dataKey="budget" fill="var(--color-budget)" fillOpacity={0.3} radius={4} />
+              <Bar
+                dataKey="budget"
+                fill="var(--color-budget)"
+                fillOpacity={0.3}
+                radius={4}
+              />
               <Bar dataKey="spending" fill="var(--color-spending)" radius={4} />
             </BarChart>
           </ChartContainer>
