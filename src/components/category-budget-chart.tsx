@@ -78,7 +78,18 @@ export function CategoryBudgetChart({
                 cursor={false}
                 content={
                   <ChartTooltipContent
-                    formatter={(value) => `¥${Number(value).toLocaleString()}`}
+                    formatter={(value, name) => (
+                      <div className="flex flex-1 justify-between items-center leading-none">
+                        <div className="grid gap-1.5">
+                          <span className="text-muted-foreground">
+                            {chartConfig[name as keyof typeof chartConfig]?.label || name}
+                          </span>
+                        </div>
+                        <span className="font-mono font-medium tabular-nums text-foreground">
+                          ¥{Number(value).toLocaleString()}
+                        </span>
+                      </div>
+                    )}
                   />
                 }
               />
